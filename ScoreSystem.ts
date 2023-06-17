@@ -1,11 +1,8 @@
-const lossReasons = ["DQ", "FF"] as const;
-export type LossReason = typeof lossReasons[number];
+type LossReason = "DQ" | "FF";
 
-const winReasons = ["W", "KO", "TO", "JD"] as const;
-export type WinReason = typeof winReasons[number];
+type WinReason = "W" | "KO" | "TO" | "JD";
 
-const tieReasons = ["T"] as const;
-export type TieReason = typeof tieReasons[number];
+type TieReason = "T";
 
 export type AnnotatedScore = WinReason | LossReason | TieReason;
 export type NumericScore = number | LossReason;
@@ -24,14 +21,36 @@ export type AnnotatedScoreSystem = {
 export type ScoreSystem = NumericScoreSystem | AnnotatedScoreSystem;
 export type ScoreSystemType = ScoreSystem["type"];
 
-export function scoreIsAnnotatedWin(score: Score): boolean {
-  return typeof score == "string" && (winReasons as readonly string[]).includes(score);
+export function scoreIsAnnotatedWin(score: Score): score is WinReason {
+  if (typeof score !== "string") return false;
+
+  switch (score) {
+    case "W":
+      return true;
+    case "KO":
+      return true;
+    case "TO":
+      return true;
+    case "JD":
+      return true;
+    default:
+      return false;
+  }
 }
 
-export function scoreIsLoss(score: Score): boolean {
-  return typeof score == "string" && (lossReasons as readonly string[]).includes(score);
+export function scoreIsLossReason(score: Score): score is LossReason {
+  if (typeof score !== "string") return false;
+
+  switch (score) {
+    case "DQ":
+      return true;
+    case "FF":
+      return true;
+    default:
+      return false;
+  }
 }
 
 export function scoreIsTie(score: Score): score is TieReason {
-  return typeof score == "string" && (tieReasons as readonly string[]).includes(score);
+  return score === "T";
 }
