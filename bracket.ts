@@ -1,22 +1,22 @@
 import { ScoreSystem, NumericScoreSystem } from "./scoreSystem";
 
-interface BaseBracket<TScoring extends ScoreSystem> {
+type BaseBracket<TScoring extends ScoreSystem> = {
   type: "anon_bracket" | "named_bracket";
   id: string;
   rounds: Round<TScoring>[];
   userOptions: RoundOptions<TScoring>[];
-}
+};
 
-export interface AnonBracket<TScoring extends ScoreSystem>
-  extends BaseBracket<TScoring> {
-  type: "anon_bracket";
-}
+export type AnonBracket<TScoring extends ScoreSystem> =
+  BaseBracket<TScoring> & {
+    type: "anon_bracket";
+  };
 
-export interface NamedBracket<TScoring extends ScoreSystem>
-  extends BaseBracket<TScoring> {
-  type: "named_bracket";
-  name: string;
-}
+export type NamedBracket<TScoring extends ScoreSystem> =
+  BaseBracket<TScoring> & {
+    type: "named_bracket";
+    name: string;
+  };
 
 type Round<TScoring extends ScoreSystem> = {
   idx: number;
