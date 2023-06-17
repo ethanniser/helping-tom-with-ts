@@ -6,11 +6,10 @@ import {
 } from "./scoreSystem";
 
 type GameState = {};
-export type Game<TScoring extends ScoreSystem> = {
+type BaseGame = {
   id: string;
   name: string;
   round: number;
-  slots: GameSlot<TScoring>[];
   state: GameState;
   activeSince: number | null;
   availableSince: number | null;
@@ -19,12 +18,22 @@ export type Game<TScoring extends ScoreSystem> = {
   nextGameSlotIDs: string[] | null;
   locationID: string | null;
   loserPlacement: number | null;
-  scoreSystem: TScoring extends NumericScoreSystem ? "numeric" : "annotated";
-} & (TScoring extends NumericScoreSystem
-  ? { scoreToWin: number }
-  : Record<never, never>);
+};
 
-type GameSlot<TScoring extends ScoreSystem> = {
+export type AnnotatedGame = {
+  scoreSystem: "annotated";
+  slots: AnnotatedGameSlot[];
+} & BaseGame;
+
+export type NumericGame = {
+  scoreSystem: "numeric";
+  slots: NumericGameSlot[];
+  scoreToWin: number;
+} & BaseGame;
+
+export type Game = AnnotatedGame | NumericGame;
+
+type BaseGameSlot = {
   gameID: string;
   slotIdx: number;
   playerID: string | null;
@@ -32,5 +41,7 @@ type GameSlot<TScoring extends ScoreSystem> = {
   waitingTime: number | null;
   prevGameID: string | null;
   isWinner: boolean;
-  score: TScoring extends NumericScoreSystem ? NumericScore : AnnotatedScore;
 };
+
+export type NumericGameSlot = BaseGameSlot & { score: NumericScore };
+export type AnnotatedGameSlot = BaseGameSlot & { score: AnnotatedScore };

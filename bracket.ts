@@ -1,37 +1,49 @@
 import { ScoreSystem, NumericScoreSystem } from "./scoreSystem";
 
-export type Bracket<TScoring extends ScoreSystem> =
-  | AnonBracket<TScoring>
-  | NamedBracket<TScoring>;
+export type Bracket = AnonBracket | NamedBracket;
 
-interface BaseBracket<TScoring extends ScoreSystem> {
+interface BaseBracket {
   type: "anon_bracket" | "named_bracket";
   id: string;
-  rounds: Round<TScoring>[];
-  userOptions: RoundOptions<TScoring>[];
+  rounds: Round[];
+  userOptions: RoundOptions[];
 }
 
-export interface AnonBracket<TScoring extends ScoreSystem>
-  extends BaseBracket<TScoring> {
+export interface AnonBracket extends BaseBracket {
   type: "anon_bracket";
 }
 
-export interface NamedBracket<TScoring extends ScoreSystem>
-  extends BaseBracket<TScoring> {
+export interface NamedBracket extends BaseBracket {
   type: "named_bracket";
   name: string;
 }
 
-type Round<TScoring extends ScoreSystem> = {
+export type Round = AnnotatedRound | NumericRound;
+
+export type AnnotatedRound = {
+  scoreSystem: "annotated";
   idx: number;
   bracketID: string;
   name: string;
-} & (TScoring extends NumericScoreSystem
-  ? { scoreToWin: number }
-  : Record<never, never>);
+};
 
-type RoundOptions<TScoring extends ScoreSystem> = {
+export type NumericRound = {
+  scoreSystem: "numeric";
+  idx: number;
+  bracketID: string;
   name: string;
-} & (TScoring extends NumericScoreSystem
-  ? { scoreToWin: number }
-  : Record<never, never>);
+  scoreToWin: number;
+};
+
+export type RoundOptions = AnnotatedRoundOptions | NumericRoundOptions;
+
+export type AnnotatedRoundOptions = {
+  scoreSystem: "annotated";
+  name: string;
+};
+
+export type NumericRoundOptions = {
+  scoreSystem: "numeric";
+  name: string;
+  scoreToWin: number;
+};

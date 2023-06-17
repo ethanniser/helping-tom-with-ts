@@ -1,50 +1,47 @@
 import { AnonBracket, Bracket } from "./bracket";
-import { Game } from "./game";
+import { AnnotatedGame, Game, NumericGame } from "./game";
 import {
   AnnotatedScoreSystem,
   NumericScoreSystem,
   ScoreSystem,
 } from "./scoreSystem";
 
-function differentLogic<TScoring extends ScoreSystem>(
-  bracket: Bracket<TScoring>,
-  games: Game<TScoring>[]
-) {
-  // how you determine what generic your in depends on the arguments you have, in this case we can use game.scoreToWin
+function differentLogic(bracket: Bracket, games: Game[]) {
+  let game = games[0];
 
-  const game = games[0][""];
+  if (game.scoreSystem === "numeric") {
+    // could validate every game, but if you know theyre all the same you can just cast
+    doThingNumeric(bracket, games as NumericGame[]);
+  } else {
+    doThingAnnotated(bracket, games as AnnotatedGame[]);
+  }
 }
 
-function doThingNumeric(
-  bracket: Bracket<NumericScoreSystem>,
-  games: Game<NumericScoreSystem>[]
-) {
+function doThingNumeric(bracket: Bracket, games: NumericGame[]) {
   for (let i = 0; i < games.length; i++) {
     const game = games[i];
     const round = bracket.rounds[game.round];
+
+    if (round.scoreSystem !== "numeric") {
+      throw new Error("round and game score systems dont match");
+    }
 
     // yay!
     game.scoreToWin = round.scoreToWin;
   }
 }
 
-function doThingAnnotated(
-  bracket: Bracket<AnnotatedScoreSystem>,
-  games: Game<AnnotatedScoreSystem>[]
-) {}
+function doThingAnnotated(bracket: Bracket, games: AnnotatedGame[]) {
+  // same pattern as above
+}
 
-function sameLogicAlways<TScoring extends ScoreSystem>(
-  bracket: Bracket<TScoring>,
-  games: Game<TScoring>[]
-) {
-  // generic is always inferred
-
-  // you have access to all of the shared fields between the generics
+function sameLogicAlways(bracket: Bracket, games: Game[]) {
+  // you have access to all of the shared fields in the union
   bracket.id;
   game.endTime;
 }
 
-const game: Game<NumericScoreSystem> = {
+const game: Game = {
   id: "123456",
   name: "My Game",
   round: 1,
@@ -79,9 +76,10 @@ const game: Game<NumericScoreSystem> = {
   locationID: "345678",
   loserPlacement: null,
   scoreToWin: 150,
+  scoreSystem: "numeric",
 };
 
-const bracket: AnonBracket<NumericScoreSystem> = {
+const bracket: AnonBracket = {
   type: "anon_bracket",
   id: "123456",
   rounds: [
@@ -90,34 +88,41 @@ const bracket: AnonBracket<NumericScoreSystem> = {
       bracketID: "123456",
       name: "Round 1",
       scoreToWin: 150,
+      scoreSystem: "numeric",
     },
     {
       idx: 1,
       bracketID: "123456",
       name: "Round 2",
       scoreToWin: 200,
+      scoreSystem: "numeric",
     },
     {
       idx: 2,
       bracketID: "123456",
       name: "Final Round",
       scoreToWin: 300,
+      scoreSystem: "numeric",
     },
   ],
   userOptions: [
     {
       name: "Option 1",
       scoreToWin: 150,
+      scoreSystem: "numeric",
     },
     {
       name: "Option 2",
       scoreToWin: 200,
+      scoreSystem: "numeric",
     },
     {
       name: "Option 3",
       scoreToWin: 300,
+      scoreSystem: "numeric",
     },
   ],
 };
 
 sameLogicAlways(bracket, [game]);
+differentLogic(bracket, [game]);

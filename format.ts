@@ -1,35 +1,28 @@
 import { AnonBracket, NamedBracket } from "./bracket";
 import { ScoreSystem } from "./scoreSystem";
 
-export type Format<TScoring extends ScoreSystem> =
-  | SingleElim<TScoring>
-  | DoubleElim<TScoring>
-  | RoundRobin<TScoring>;
+export type Format = SingleElim | DoubleElim | RoundRobin;
 
-interface BaseFormat<TScoring extends ScoreSystem> {
+interface BaseFormat {
   type: "single_elimination" | "double_elimination" | "round_robin";
-  scoring: TScoring;
+  scoring: ScoreSystem;
 }
 
-interface BaseElimFormat<TScoring extends ScoreSystem>
-  extends BaseFormat<TScoring> {
-  brackets: (AnonBracket<TScoring> | NamedBracket<TScoring>)[];
+interface BaseElimFormat extends BaseFormat {
+  brackets: (AnonBracket | NamedBracket)[];
 }
 
-interface SingleElim<TScoring extends ScoreSystem>
-  extends BaseElimFormat<TScoring> {
+interface SingleElim extends BaseElimFormat {
   type: "single_elimination";
-  brackets: [AnonBracket<TScoring>];
+  brackets: [AnonBracket];
 }
 
-interface DoubleElim<TScoring extends ScoreSystem>
-  extends BaseElimFormat<TScoring> {
+interface DoubleElim extends BaseElimFormat {
   type: "double_elimination";
-  brackets: [NamedBracket<TScoring>, NamedBracket<TScoring>];
+  brackets: [NamedBracket, NamedBracket];
 }
 
-interface RoundRobin<TScoring extends ScoreSystem>
-  extends BaseFormat<TScoring> {
+interface RoundRobin extends BaseFormat {
   type: "round_robin";
   pointsPerWin: number;
   pointsPerLoss: number;

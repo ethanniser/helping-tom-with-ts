@@ -4,8 +4,16 @@ import { NumericScoreSystem, ScoreSystem } from "./scoreSystem";
 
 type TournamentFields = {};
 
-export type Tournament<TScoring extends ScoreSystem> = TournamentFields & {
-  format: Format<TScoring>;
-  games: Game<TScoring>[];
-  scoreSystem: TScoring extends NumericScoreSystem ? "numeric" : "annotated";
+export type Tournament = NumericTournament | AnnotatedTournament;
+
+type NumericTournament = TournamentFields & {
+  scoreSystem: "numeric";
+  format: Format;
+  games: Game[];
+};
+
+type AnnotatedTournament = TournamentFields & {
+  scoreSystem: "annotated";
+  format: Format;
+  games: Game[];
 };
