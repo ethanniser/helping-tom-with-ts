@@ -5,8 +5,8 @@ export type Bracket = AnonBracket | NamedBracket;
 interface BaseBracket {
   type: "anon_bracket" | "named_bracket";
   id: string;
-  rounds: Round[];
-  userOptions: RoundOptions[];
+  rounds: AnnotatedRound[] | NumericRound[];
+  userOptions: AnnotatedRoundOptions[] | NumericRoundOptions[];
 }
 
 export interface AnonBracket extends BaseBracket {
