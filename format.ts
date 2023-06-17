@@ -6,28 +6,32 @@ export type Format<TScoring extends ScoreSystem> =
   | DoubleElim<TScoring>
   | RoundRobin<TScoring>;
 
-type BaseFormat<TScoring extends ScoreSystem> = {
+interface BaseFormat<TScoring extends ScoreSystem> {
   type: "single_elimination" | "double_elimination" | "round_robin";
   scoring: TScoring;
-};
+}
 
-type BaseElimFormat<TScoring extends ScoreSystem> = BaseFormat<TScoring> & {
+interface BaseElimFormat<TScoring extends ScoreSystem>
+  extends BaseFormat<TScoring> {
   brackets: (AnonBracket<TScoring> | NamedBracket<TScoring>)[];
-};
+}
 
-type SingleElim<TScoring extends ScoreSystem> = BaseElimFormat<TScoring> & {
+interface SingleElim<TScoring extends ScoreSystem>
+  extends BaseElimFormat<TScoring> {
   type: "single_elimination";
   brackets: [AnonBracket<TScoring>];
-};
+}
 
-type DoubleElim<TScoring extends ScoreSystem> = BaseElimFormat<TScoring> & {
+interface DoubleElim<TScoring extends ScoreSystem>
+  extends BaseElimFormat<TScoring> {
   type: "double_elimination";
   brackets: [NamedBracket<TScoring>, NamedBracket<TScoring>];
-};
+}
 
-type RoundRobin<TScoring extends ScoreSystem> = BaseFormat<TScoring> & {
+interface RoundRobin<TScoring extends ScoreSystem>
+  extends BaseFormat<TScoring> {
   type: "round_robin";
   pointsPerWin: number;
   pointsPerLoss: number;
   pointsPerTie: number;
-};
+}

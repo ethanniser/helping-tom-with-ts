@@ -14,4 +14,10 @@ type AnnotatedScoreSystem = {
 };
 type ScoreSystem = NumericScoreSystem | AnnotatedScoreSystem;
 
-export { ScoreSystem, NumericScoreSystem, NumericScore, AnnotatedScore };
+export {
+  ScoreSystem,
+  NumericScoreSystem,
+  AnnotatedScoreSystem,
+  NumericScore,
+  AnnotatedScore,
+};

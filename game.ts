@@ -19,6 +19,7 @@ export type Game<TScoring extends ScoreSystem> = {
   nextGameSlotIDs: string[] | null;
   locationID: string | null;
   loserPlacement: number | null;
+  scoreSystem: TScoring extends NumericScoreSystem ? "numeric" : "annotated";
 } & (TScoring extends NumericScoreSystem
   ? { scoreToWin: number }
   : Record<never, never>);
